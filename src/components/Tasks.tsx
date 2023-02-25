@@ -1,40 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import taskService from "../taskService";
 import EditModal from "./EditModal";
 import Modal from "react-bootstrap/Modal";
+import { TaskContext } from "../context/TaskContext";
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState<ITask[]>([]);
-  const [open, setOpen] = useState(false);
-  const [edited, setEdited] = useState(false);
-  const [task, setTask] = useState<ITask>({
-    task: "",
-    assignee: "",
-    status: "To be done",
-  });
-  useEffect(() => {
-    fetchTasks();
-  }, [edited]);
-  const fetchTasks = () => {
-    taskService.gettasks().then((data: ITask[] | any) => setTasks(data));
-  };
+  const val = useContext(TaskContext);
   const handleDelete = (id: string) => {
     taskService.deleteTask(id).then((data) => console.log(data));
-    const updatedTask = tasks.filter((t) => t._id !== id);
-    setTasks(updatedTask);
+    const updatedTask = val?.tasks.filter((t: ITask) => t._id !== id);
+    val?.setTasks(updatedTask!);
   };
   const updateTask = (id: string, data: ITask) => {
     taskService.updateTask(id, data).then((result) => console.log(result));
-    const updatedTask = tasks.filter((t) => t._id !== id);
-    setTasks(updatedTask);
+    const updatedTask = val?.tasks.filter((t: ITask) => t._id !== id);
+    val?.setTasks(updatedTask!);
   };
   const handleEdit = (tsk: ITask) => {
-    setOpen(true);
-    setEdited(false);
-    setTask(tsk);
+    val?.setOpen(true);
+    val?.setEdited(false);
+    val?.setTask(tsk);
   };
   const handleClose = () => {
-    setOpen(false);
+    val?.setOpen(false);
   };
   return (
     <div>
@@ -51,8 +39,8 @@ const Tasks = () => {
           </tr>
         </thead>
         <tbody>
-          {tasks &&
-            tasks.map((t: ITask) => (
+          {val?.tasks &&
+            val?.tasks.map((t: ITask) => (
               <tr key={t._id}>
                 <td scope="row">{t._id}</td>
                 <td>{t.task}</td>
@@ -78,15 +66,15 @@ const Tasks = () => {
             ))}
         </tbody>
       </table>
-      <Modal show={open} onHide={handleClose}>
+      <Modal show={val?.open} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditModal
-            task={task as ITask}
-            setOpen={setOpen}
-            setEdited={setEdited}
+            task={val?.task as ITask}
+            setOpen={val?.setOpen!}
+            setEdited={val?.setEdited!}
           />
         </Modal.Body>
       </Modal>

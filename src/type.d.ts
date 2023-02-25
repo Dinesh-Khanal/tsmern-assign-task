@@ -16,3 +16,14 @@ interface Input {
   assignee: string;
   status: StatusEnum;
 }
+
+type TaskContextType = {
+  tasks: ITask[];
+  setTasks: (tasks: ITask[]) => void;
+  open: boolean;
+  setOpen: (arg: boolean) => void;
+  edited: boolean;
+  setEdited: (arg: boolean) => void;
+  task: ITask;
+  setTask: (task: ITask) => void;
+};
