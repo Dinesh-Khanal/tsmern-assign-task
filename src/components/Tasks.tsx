@@ -73,8 +73,8 @@ const Tasks = () => {
         <Modal.Body>
           <EditModal
             task={val?.task as ITask}
-            setOpen={val?.setOpen!}
-            setEdited={val?.setEdited!}
+            setOpen={val!.setOpen}
+            setEdited={val!.setEdited}
           />
         </Modal.Body>
       </Modal>
